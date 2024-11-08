@@ -10,9 +10,10 @@ import {
     WaterfallStepContext
 } from 'botbuilder-dialogs'
 import { Dialogs } from '../common/dialogs'
+import { GeminiAI } from 'src/core/generative_ai/gemini'
 
 export class MainDialog extends ComponentDialog {
-    constructor() {
+    constructor(private readonly geminiAI: GeminiAI) {
         super(Dialogs.MainDialog)
 
         this.addDialog(new WaterfallDialog(
@@ -23,7 +24,7 @@ export class MainDialog extends ComponentDialog {
     }
 
     private async contextAnalyzer(stepContext: WaterfallStepContext): Promise<DialogTurnResult> {
-        await stepContext.context.sendActivity(`Echo: ${stepContext.context.activity.text}`)
+        await stepContext.context.sendActivity(await this.geminiAI.GetAnswers(stepContext))
         return stepContext.endDialog()
     }
 

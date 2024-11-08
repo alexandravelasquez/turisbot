@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@botbuildercommunity/core": "^1.0.1",
+    "@google/generative-ai": "^0.21.0",
     "@nestjs/axios": "^3.0.2",
     "@nestjs/common": "^10.3.3",
     "@nestjs/config": "^3.2.0",

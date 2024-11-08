@@ -14,6 +14,7 @@ import { ConfigService } from '@nestjs/config'
 import { MainDialog } from './dialogs/main.dialog'
 import { WhatsAppExternalService } from 'src/core/channels'
 import { Webhook } from 'src/core/channels/whatsapp/interfaces/webhook'
+import { GeminiAI } from 'src/core/generative_ai/gemini'
 
 @Injectable()
 export class MessagesService {
@@ -31,7 +32,7 @@ export class MessagesService {
 
         this.bot = new MainBot(
             this.conversationState,
-            new MainDialog())
+            new MainDialog(new GeminiAI(this.configService)))
     }
 
     async processDefaultMessageAsync(req: Request, res: Response) {
