@@ -5,17 +5,20 @@ import { BotFrameworkAuthentication } from '../authentication/botFrameworkAuthen
 import { WhatsAppAdapter } from './whatsapp'
 import { WhatsAppExternalService } from '../channels'
 import { TextMessage } from '../channels/whatsapp/models'
+import { GoogleSheets } from '../google_sheets'
+import { HttpService } from '@nestjs/axios'
 
 export class Adapters {
     private readonly errorMessage: string = '¡Mil disculpas, ocurrió un problema en el servicio! 🤖 Ya estamos trabajando para solucionarlo. 😄'
 
     constructor(
+        private readonly httpService: HttpService,
         private readonly configService: ConfigService,
         private readonly whatsAppExternalService: WhatsAppExternalService) { }
 
     DefaultAdapter(): CloudAdapter {
         const adapter = new CloudAdapter(new BotFrameworkAuthentication(this.configService).GetConfiguration())
-        adapter.use(new ResponseMiddleware())
+        adapter.use(new ResponseMiddleware(new GoogleSheets(this.httpService, this.configService)))
         adapter.onTurnError = async (context: TurnContext, error: Error) => {
             await context.sendTraceActivity(
                 'OnTurnError Trace',
@@ -30,7 +33,7 @@ export class Adapters {
 
     WhatsAppAdapter(): WhatsAppAdapter {
         const adapter = new WhatsAppAdapter(this.configService, this.whatsAppExternalService)
-        adapter.use(new ResponseMiddleware())
+        adapter.use(new ResponseMiddleware(new GoogleSheets(this.httpService, this.configService)))
         adapter.onTurnError = async (context: TurnContext, error: Error) => {
             const textMessage: TextMessage = {
                 text: this.errorMessage,

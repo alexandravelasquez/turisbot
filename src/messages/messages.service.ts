@@ -15,6 +15,7 @@ import { MainDialog } from './dialogs/main.dialog'
 import { WhatsAppExternalService } from 'src/core/channels'
 import { Webhook } from 'src/core/channels/whatsapp/interfaces/webhook'
 import { OpenAIGenerator } from 'src/core/generative_ai/openai'
+import { HttpService } from '@nestjs/axios'
 
 @Injectable()
 export class MessagesService {
@@ -23,9 +24,11 @@ export class MessagesService {
 
     constructor(
         private readonly configService: ConfigService,
+        private readonly httpService: HttpService,
         @Inject('ConversationState') private readonly conversationState: ConversationState,
         @Inject('WhatsAppExternalService') private readonly whatsAppExternalService: WhatsAppExternalService) {
         this.adapters = new Adapters(
+            this.httpService,
             this.configService,
             this.whatsAppExternalService
         )
