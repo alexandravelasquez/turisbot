@@ -77,7 +77,7 @@ export class WhatsAppAdapter extends CustomWebAdapter {
         if (!req?.headers?.['x-hub-signature-256'])
             this.handleBadRequest(res, 'El header x-hub-signature-256 es requerido.')
 
-        await this.whatsAppExternalService.verifySignature(req.headers['x-hub-signature-256'], body)
+        //await this.whatsAppExternalService.verifySignature(req.headers['x-hub-signature-256'], body)
 
         let activity = ActivityHelper.payloadToActivity(this.configService, body)
         const context: TurnContext = this.createContext(activity)
